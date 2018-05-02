@@ -25,28 +25,29 @@
 			</div>
 		</aside> 
 		<article class="index-right">
-			<div class="Carousel">
-				
-			</div>
+			<slide-show :slides='slides' :invTime='slideSpeed' @change='doSomethingOnSlideChange'></slide-show>
 			<div class="index-board-list">
 				<template v-for='(item,index) in boardList'>
 					<div class="index-board-item ">
 						<div class="index-board-item-inner" :class='["index-board-"+item.id]'>
 							<h2>{{item.title}}</h2>
 							<p>{{item.description}}</p>
-							<div class="button"><a href="">立即购买</a></div>
+							<div class="button"><a :href="'/detail/'+item.toKey">立即购买</a></div>
 						</div>
 					</div> 
 				</template>
 				<div class="hidden">&nbsp;</div> 
-				
-				
 			</div>
 		</article>
 	</div>
 </template>
 <script type="text/javascript">
+import slideShow from '../components/base/slideShow.vue';
+
 	export default {
+		components: {
+			slideShow,
+		},
 	  name: 'IndexPage',
 	  created () {
 	  	console.log(this);
@@ -59,8 +60,36 @@
 
 	  	})
 	  },
+	  methods: {
+	  	doSomethingOnSlideChange (index) {
+	  		console.log(index);
+	  	}
+	  },
 	  data () {
 	    return {
+	    	slideSpeed: 3000,
+	    	slides: [
+	    	  {
+	    	    src: require('../assets/slideShow/pic1.jpg'),
+	    	    title: 'xxx1',
+	    	    href: 'detail/analysis'
+	    	  },
+	    	  {
+	    	    src: require('../assets/slideShow/pic2.jpg'),
+	    	    title: 'xxx2',
+	    	    href: 'detail/count'
+	    	  },
+	    	  {
+	    	    src: require('../assets/slideShow/pic3.jpg'),
+	    	    title: 'xxx3',
+	    	    href: 'http://xxx.xxx.com'
+	    	  },
+	    	  {
+	    	    src: require('../assets/slideShow/pic4.jpg'),
+	    	    title: 'xxx4',
+	    	    href: 'detail/forecast'
+	    	  }
+	    	],
 	    	boardList: [
 	    	  {
 	    	    title: '开放产品',
@@ -172,6 +201,7 @@
 }
 /*sider style*/
 .index-left-block {
+	min-height: 50vh;
 	background-color: #fff;
 	padding-bottom: 0.1rem;
 }
@@ -207,6 +237,7 @@
 .latest-news {
 	margin-top: 0.15rem;
 
+
 }
 
 .latest-news li {
@@ -237,7 +268,8 @@
 }
 
 .index-board-item-inner {
-	padding-left: 1.3rem;
+	padding-top: 1.3rem;
+	text-align: center;
 
 }
 .index-board-item-inner h2 {
@@ -262,16 +294,16 @@
 }
 
 .index-board-car {
-	background: url(../assets/images/1.png) left center no-repeat;
+	background: url(../assets/images/1.png) center top no-repeat;
 }
 .index-board-earth {
-	background: url(../assets/images/2.png) left center no-repeat;
+	background: url(../assets/images/2.png) center top no-repeat;
 }
  .index-board-loud {
-	background: url(../assets/images/3.png) left center no-repeat;
+	background: url(../assets/images/3.png) center top no-repeat;
 }
 .index-board-hill {
-	background: url(../assets/images/4.png) left center no-repeat;
+	background: url(../assets/images/4.png) center top no-repeat;
 }
 
 .hidden {
@@ -282,7 +314,15 @@
 	visibility: hidden;
 }
 
+@media screen and (min-width:400px ){
+	.index-board-item-inner {
+		padding-left: 1.3rem;
+		padding-top: 0;
+		background-position: left center;
+		text-align: left;
 
+	}
+}
 
 @media screen and (min-width:768px ){
 	/*整体布局*/
@@ -312,7 +352,7 @@
 	border: 0.5px solid #ccc;
 }
 
-    
+   
 }
 
 @media screen and (min-width:950px ){

@@ -60,28 +60,34 @@ const devWebpackConfig = merge(baseWebpackConfig, {
           data: appData.getNewsList
         })
       }),
-      app.get('/api/login', (req, res) => {
+      app.post('/api/login', (req, res) => {
         res.json({
           code: 0,
           data: appData.login
         })
       }),
-      app.get('/api/getPrice', (req, res) => {
+      app.post('/api/getPrice', (req, res) => {
         res.json({
           code: 0,
           data: appData.getPrice
         })
       }),
-      app.get('/api/createOrder', (req, res) => {
+      app.post('/api/createOrder', (req, res) => {
         res.json({
           code: 0,
           data: appData.createOrder
         })
       }),
-      app.get('/api/getOrderList', (req, res) => {
+      app.post('/api/getOrderList', (req, res) => {
         res.json({
           code: 0,
           data: appData.getOrderList
+        })
+      }),
+      app.post('/api/checkOrder', (req, res) => {
+        res.json({
+          code: 0,
+          data: ''
         })
       })
     } 
