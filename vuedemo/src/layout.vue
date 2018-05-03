@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root" @click='resetComponent'>
     <header class="app-header">
       <router-link :to="{path: '/'}">
          <img src="./assets/logo.png" height="50" width="50" class="logo">
@@ -40,6 +40,7 @@
 import myDialog from './components/base/dialog.vue';
 import logForm from './components/logForm.vue';
 import regForm from './components/regForm.vue';
+import {eventBus} from './eventBus.js'
 export default {
   name: 'Layout',
   components: {
@@ -69,6 +70,9 @@ export default {
       this.isUserShow = true;
       this.userName = userInfo.username;
 
+    },
+    resetComponent () {
+      eventBus.$emit("reset-component");
     }
   }
 }

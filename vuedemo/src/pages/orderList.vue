@@ -53,6 +53,7 @@ import DatePicker from '../components/base/datetimePicker.vue'
 		},
 		watch: {
 			keyWords () {
+				this.$store.commit('changeParams',{key:"keyWords",val:this.keyWords});
 				this.getOrderList();
 			},
 			orderList () {
@@ -66,9 +67,9 @@ import DatePicker from '../components/base/datetimePicker.vue'
 				active: false,
 
 				keyWords: '',
-				product: {},
-				startDate: '',
-				endDate: '',
+				// product: {},
+				// startDate: '',
+				// endDate: '',
 
 				products: [
 				        {
@@ -88,11 +89,11 @@ import DatePicker from '../components/base/datetimePicker.vue'
 				          value: 3
 				        }
 				      ], 
+
 				everyPageOrder: 8,
 				nowPage: 1,
 				nowOrderList: [],
-				orderList: [],
-
+				
 				listHeader: [
 				  {
 				    label: '订单号',
@@ -137,32 +138,39 @@ import DatePicker from '../components/base/datetimePicker.vue'
 				return pageNum;
 			},
 
+			orderList () {
+				console.log();
+				return this.$store.getters.tableList;
+			}
+
 
 		},
 
 		methods: {
 			getOrderList () {
-				let paramObject = {
-					keyWords: this.keyWords,
-					product: this.product.value,
-					startDate: this.startDate,
-					endDate: this.endDate,
+				// let paramObject = {
+				// 	keyWords: this.keyWords,
+				// 	product: this.product.value,
+				// 	startDate: this.startDate,
+				// 	endDate: this.endDate,
 
-				}
+				// }
 
-				this.$http.post('/api/getOrderList',paramObject).then((res)=>{
-					this.orderList = res.data.data.list;
+				// this.$http.post('/api/getOrderList',paramObject).then((res)=>{
+				// 	this.orderList = res.data.data.list;
 
-				}, (err)=>{
-					console.log("获取数据失败："+err);
-				})
+				// }, (err)=>{
+				// 	console.log("获取数据失败："+err);
+				// })
+				this.$store.dispatch('fetchtableList');
 			},
 			selectChange (v) {
-				this.product = v;
-				this.getOrderList();
+				console.log(v);
+				this.$store.commit('changeParams',{key:"product",val:v.value});
+				// this.getOrderList();
 			},
 			dateChange (attr,v) {
-				this[attr] = v;
+				this.$store.commit('changeParams',{key:attr,val:v});
 				this.getOrderList();
 			},
 
@@ -225,8 +233,10 @@ import DatePicker from '../components/base/datetimePicker.vue'
 </script>
 <style scoped>
 .orderList-wrap {
+/*	border: 2px solid red;*/
 	position: relative;
-	height: calc(100vh - 180px - 0.3rem);
+	padding-bottom: 0.7rem;
+	/*min-height: calc(100vh - 180px - 0.3rem);*/
 }
 .orderList-chooser {
 	width: 100%;

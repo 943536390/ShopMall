@@ -1,6 +1,6 @@
 <template>
 	<div class="selection-wrap">
-		<div class="selection-show" @click='isShow=!isShow'>{{selection[selectIndex].label}}</div>
+		<div class="selection-show" @click='chooseItem'>{{selection[selectIndex].label}}</div>
 		<div class="selection-option" v-if='isShow'>
 			<ul>
 				<li v-for='(item,index) in selection' 
@@ -11,8 +11,14 @@
 	</div>
 </template>
 <script type="text/javascript">
+import {eventBus} from '../../eventBus.js';
+
 	export default {
-		
+		mounted () {
+			eventBus.$on('reset-component',()=>{
+				this.isShow = false;
+			});
+		},
 		props: {
 			selection: {
 				type: Array,
@@ -37,6 +43,13 @@
 				this.selectIndex = index;
 				this.$emit('on-change',this.selection[this.selectIndex]);
 				this.isShow = false;
+			},
+			chooseItem (event) {
+				event.stopPropagation ? event.stopPropagation() : event.cancelBubble=true;
+				
+				eventBus.$emit('reset-component');
+				this.isShow = !this.isShow;
+
 			}
 		},
 		
@@ -74,6 +87,7 @@
 	background: #fff;
 	top: calc(0.3rem - 1px);
 	padding-top: 0.05rem;
+	z-index: 1000;
 }
 .selection-option li {
 	margin-bottom: 0.05rem;
