@@ -28,12 +28,17 @@
 				</tr>
 			</thead>
 			<tbody >
-				<tr v-for='item in orderList'>
+				<tr v-for='item in nowOrderList'>
 					<td v-for='tditem in listHeader'>{{item[tditem.name]}}</td>
 				</tr>
-				<tr v-if='this.orderList.length==0'><td>获取数据失败！</td></tr>
+				<tr v-if='orderList.length==0'><td :colspan="listHeader.length">获取数据失败！</td></tr>
 			</tbody>
 		</table>
+		<ul class="pagination-wrap">
+			<li @click='changePage(nowPage-1)'>&lt;</li>
+			<li v-for='n in pageNum' @click='changePage(n)' :class="{active: nowPage==n}">{{n}}</li>
+			<li @click='changePage(nowPage+1)'>&gt;</li>
+		</ul>
 	</div>
 </template>
 <script type="text/javascript">
@@ -49,6 +54,9 @@ import DatePicker from '../components/base/datetimePicker.vue'
 		watch: {
 			keyWords () {
 				this.getOrderList();
+			},
+			orderList () {
+				this.changePage (1);
 			}
 		},
 		data () {
@@ -80,8 +88,11 @@ import DatePicker from '../components/base/datetimePicker.vue'
 				          value: 3
 				        }
 				      ], 
-
+				everyPageOrder: 8,
+				nowPage: 1,
+				nowOrderList: [],
 				orderList: [],
+
 				listHeader: [
 				  {
 				    label: '订单号',
@@ -118,6 +129,17 @@ import DatePicker from '../components/base/datetimePicker.vue'
 			}
 		},
 
+		computed: {
+			pageNum () {
+				let orderSum = this.orderList.length;
+				let pageNum = Math.floor(orderSum/this.everyPageOrder + 1);
+				//console.log(pageNum);
+				return pageNum;
+			},
+
+
+		},
+
 		methods: {
 			getOrderList () {
 				let paramObject = {
@@ -130,6 +152,7 @@ import DatePicker from '../components/base/datetimePicker.vue'
 
 				this.$http.post('/api/getOrderList',paramObject).then((res)=>{
 					this.orderList = res.data.data.list;
+
 				}, (err)=>{
 					console.log("获取数据失败："+err);
 				})
@@ -179,18 +202,32 @@ import DatePicker from '../components/base/datetimePicker.vue'
 					});
 
 					this.order = -this.order;
-				
-				
-
+			},
+			changePage (index) {
+				if(index === 0){
+					index = this.pageNum;
+				}
+				if(index === this.pageNum+1){
+					index = 1;
+				}
+				this.nowPage = index;
+				let start = (index-1) * this.everyPageOrder;
+				let end = start + this.everyPageOrder;
+				this.nowOrderList = this.orderList.slice(start, end);
 			}
 		},
 		mounted () {
 			
 			this.getOrderList();
+
 		}
 	}
 </script>
 <style scoped>
+.orderList-wrap {
+	position: relative;
+	height: calc(100vh - 180px - 0.3rem);
+}
 .orderList-chooser {
 	width: 100%;
 }
@@ -243,4 +280,23 @@ import DatePicker from '../components/base/datetimePicker.vue'
 	background: #35495e;
 }
 
+.pagination-wrap {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.pagination-wrap li {
+	display: inline-block;
+	padding: 0.06rem;
+	cursor: pointer;
+}
+
+.pagination-wrap li:hover {
+	background: #ccc;
+	color: #fff;
+}
+.pagination-wrap li.active {
+	background: #4FC08D;
+	color: #fff;
+}
 </style>
